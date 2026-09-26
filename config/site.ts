@@ -1,0 +1,2 @@
+export const site={name:'Free QR Code Studio',description:'Create QR codes online for free, with no sign up required.',url:process.env.NEXT_PUBLIC_SITE_URL||'https://YOUR-DOMAIN.com',contactEmail:process.env.NEXT_PUBLIC_CONTACT_EMAIL||'contact@example.com'};
+export const nav=[['QR Generator','/qr-code-generator'],['QR Code Types','/#qr-types'],['How It Works','/#how-it-works'],['Blog','/blog'],['FAQ','/faq']];
