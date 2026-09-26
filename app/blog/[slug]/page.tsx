@@ -1,1 +1,81 @@
-import {notFound} from 'next/navigation';import {posts} from '@/lib/blog';import Link from 'next/link';import JsonLd from '@/components/JsonLd';import {site} from '@/config/site';export function generateStaticParams(){return posts.map(p=>({slug:p.slug}))}export async function generateMetadata({params}:{params:Promise<{slug:string}>}){const p=posts.find(x=>x.slug=== (await params).slug);return p?{title:p.title+' | Free QR Code Studio',description:p.excerpt}:{}}export default async function Page({params}:{params:Promise<{slug:string}>}){const p=posts.find(x=>x.slug===(await params).slug);if(!p)notFound();return <main className="container py-16"><article className="prose prose-slate mx-auto"><div className="text-sm font-semibold text-brand">{p.category} · {p.reading} · {p.date}</div><h1>{p.title}</h1><p className="lead">{p.excerpt}</p>{p.body.map(([h,b])=><section key={h}><h2>{h}</h2><p>{b}</p></section>)}<h2>Related tool</h2><p><Link href="/qr-code-generator">Create a QR code with Free QR Code Studio →</Link></p></article><JsonLd data={{'@context':'https://schema.org','@type':'Article',headline:p.title,datePublished:p.date,dateModified:p.date,description:p.excerpt,mainEntityOfPage:site.url+'/blog/'+p.slug}}/></main>}
+import { notFound } from 'next/navigation';
+import { posts } from '@/lib/blog';
+import Link from 'next/link';
+import JsonLd from '@/components/JsonLd';
+import { site } from '@/config/site';
+
+export function generateStaticParams() {
+  return posts.map((p) => ({
+    slug: p.slug,
+  }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const p = posts.find((x) => x.slug === slug);
+
+  return p
+    ? {
+        title: `${p.title} | Free QR Code Studio`,
+        description: p.excerpt,
+      }
+    : {};
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const p = posts.find((x) => x.slug === slug);
+
+  if (!p) {
+    notFound();
+  }
+
+  return (
+    <main className="container py-16">
+      <article className="prose prose-slate mx-auto">
+        <div className="text-sm font-semibold text-brand">
+          {p.category} · {p.reading} · {p.date}
+        </div>
+
+        <h1>{p.title}</h1>
+
+        <p className="lead">{p.excerpt}</p>
+
+        {p.body.map(([h, b]) => (
+          <section key={h}>
+            <h2>{h}</h2>
+            <p>{b}</p>
+          </section>
+        ))}
+
+        <h2>Related tool</h2>
+
+        <p>
+          <Link href="/qr-code-generator">
+            Create a QR code with Free QR Code Studio →
+          </Link>
+        </p>
+      </article>
+
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: p.title,
+          datePublished: p.date,
+          dateModified: p.date,
+          description: p.excerpt,
+          mainEntityOfPage: `${site.url}/blog/${p.slug}`,
+        }}
+      />
+    </main>
+  );
+}
